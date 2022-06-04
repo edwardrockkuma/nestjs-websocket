@@ -1,0 +1,26 @@
+mode: ContinuousDelivery
+next-version: 1.0.0
+branches:
+  develop:
+    regex: dev(elop)?(ment)?$
+    tag: alpha
+  uat:
+    regex: uat?[/-]
+    source-branches: [uat]
+    tag: beta
+  master:
+    tag: ""
+  release:
+    regex: releases?[/-]
+    tag: rc
+  feature:
+    mode: ContinuousDeployment
+    regex: features?[/-]
+    tag: useBranchName
+    increment: Minor
+  hotfix:
+    regex: hotfix(es)?[/-]
+    tag: hotfix
+
+ignore:
+  sha: []
