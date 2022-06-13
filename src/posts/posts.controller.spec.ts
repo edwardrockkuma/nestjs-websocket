@@ -29,16 +29,14 @@ describe("PostsController" , ()=>{
 
     describe("getAll" , ()=>{
         it("should return an array of posts" , async ()=>{
-            //jest.spyOn(postsService,"getAllPosts").mockReturnValue(Promise.resolve( result));
-            
+           
             expect(await postsController.getAllPosts()).toEqual(postArray);
         });
     });
 
     describe("getPostById" , ()=>{
         it("should return a post" , async ()=>{
-            //jest.spyOn(postsService,"getPostById").mockReturnValue( Promise.resolve(result));
-
+            
             expect(await postsController.getPostById('1')).toEqual(post1);
         });
     });
