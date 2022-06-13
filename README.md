@@ -1,8 +1,8 @@
 ## Description
 + Plan to build a real-time web-base tool.
 + Features:
+  + [x] postgresql
   + [ ] websocket
-  + [ ] postgresql
   + [ ] DDD 
     
 
