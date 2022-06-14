@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import User from './user.entity';
 import CreateUserDto from './dto/createUser.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -31,5 +32,12 @@ export class UsersService {
             return user;
         }
         throw new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND);
+    }
+
+    async setCurrentRefreshToken(refreshToken: string, userId: number) {
+        const currentHashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+        await this.usersRepository.update(userId, {
+            currentHashedRefreshToken
+        });
     }
 }

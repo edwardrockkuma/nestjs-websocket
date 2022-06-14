@@ -7,10 +7,10 @@ import * as Joi from "@hapi/joi";
 import {DatabaseModule} from "./database/database.module";
 import {AuthenticationModule} from "./authentication/authentication.module";
 import {UsersModule} from "./users/users.module";
+import {ChatModule} from "./chat/chat.module";
 
 @Module({
   imports: [
-      PostsModule , AuthenticationModule,UsersModule, 
       ConfigModule.forRoot({
         validationSchema: Joi.object({
             POSTGRES_HOST: Joi.string().required(),
@@ -24,6 +24,7 @@ import {UsersModule} from "./users/users.module";
         })
       }),
       DatabaseModule,
+      PostsModule , AuthenticationModule , UsersModule , ChatModule ,
   ],
   controllers: [],
   providers: [],

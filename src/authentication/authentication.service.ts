@@ -14,6 +14,16 @@ export class AuthenticationService {
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService
     ) {}
+    
+    public async getUserFromAuthenticationToken(token: string){
+        const payload: TokenPayload = this.jwtService.verify(token , {
+            secret: this.configService.get('JWT_SECRET')
+        });
+        
+        if(payload.userId) {
+            return this.usersService.getById(payload.userId);
+        }
+    }
 
     public async register(registrationData: RegisterDto) {
         const hashedPassword = await bcrypt.hash(registrationData.password, 10);
@@ -53,10 +63,35 @@ export class AuthenticationService {
         }
     }
 
-    public getCookieWithJwtToken(userId: number) {
+    // public getCookieWithJwtToken(userId: number) {
+    //     const payload: TokenPayload = { userId };
+    //     const token = this.jwtService.sign(payload);
+    //     return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+    // }
+
+    public getCookieWithJwtAccessToken(userId: number, isSecondFactorAuthenticated = false) {
+        //const payload: TokenPayload = { userId, isSecondFactorAuthenticated };
         const payload: TokenPayload = { userId };
-        const token = this.jwtService.sign(payload);
-        return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+        console.log(this.configService.get('JWT_EXPIRATION_TIME'));
+        
+        const token = this.jwtService.sign(payload, {
+            secret: this.configService.get('JWT_SECRET'),
+            expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME')}h`
+        });
+        return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_ACCESS_TOKEN_EXPIRATION_TIME')}`;
+    }
+
+    public getCookieWithJwtRefreshToken(userId: number) {
+        const payload: TokenPayload = { userId };
+        const token = this.jwtService.sign(payload, {
+            secret: this.configService.get('JWT_SECRET'),
+            expiresIn: `${this.configService.get('JWT_EXPIRATION_TIME')}h`
+        });
+        const cookie = `Refresh=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get('JWT_EXPIRATION_TIME')}`;
+        return {
+            cookie,
+            token
+        }
     }
 
     public getCookieForLogOut() {
